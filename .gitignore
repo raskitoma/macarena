@@ -1,2 +1,6 @@
 *.csv
 settings.ini
+csv/*.csv
+csv/*.db
+__pycache__/*
+geckodriver.log
