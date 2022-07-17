@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: mysql
--- Generation Time: Jul 17, 2022 at 12:12 AM
+-- Generation Time: Jul 17, 2022 at 04:42 PM
 -- Server version: 8.0.29
 -- PHP Version: 7.4.26
 
@@ -43,6 +43,26 @@ CREATE TABLE `ether_trx` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `profitable`
+--
+
+CREATE TABLE `profitable` (
+  `id` int NOT NULL,
+  `token` varchar(128) DEFAULT NULL,
+  `tokenid` int DEFAULT NULL,
+  `buy_date` varchar(7) DEFAULT NULL,
+  `buy_price` float DEFAULT NULL,
+  `buy_gas` float DEFAULT NULL,
+  `sell_date` varchar(7) DEFAULT NULL,
+  `sell_price` float DEFAULT NULL,
+  `sell_gas` float DEFAULT NULL,
+  `profit` float DEFAULT NULL,
+  `profit_percent` float DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `trx`
 --
 
@@ -75,11 +95,72 @@ CREATE TABLE `vw_tokens` (
 -- --------------------------------------------------------
 
 --
+-- Stand-in structure for view `vw_token_id`
+-- (See below for the actual view)
+--
+CREATE TABLE `vw_token_id` (
+`tokenID` int
+);
+
+-- --------------------------------------------------------
+
+--
+-- Stand-in structure for view `vw_trx_wallets`
+-- (See below for the actual view)
+--
+CREATE TABLE `vw_trx_wallets` (
+`hash` varchar(128)
+,`mmmm` varchar(2)
+,`timestamp` datetime
+,`token` text
+,`tokenID` int
+,`trx_value` double
+,`tx_action` varchar(4)
+,`tx_block` int
+,`tx_from` varchar(128)
+,`tx_gas` double
+,`tx_to` varchar(128)
+,`tx_total` double
+,`tx_value` float
+,`yyyy` varchar(4)
+);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `wallets`
+--
+
+CREATE TABLE `wallets` (
+  `wallet` varchar(128) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Structure for view `vw_tokens`
 --
 DROP TABLE IF EXISTS `vw_tokens`;
 
 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`%` SQL SECURITY DEFINER VIEW `vw_tokens`  AS SELECT DISTINCT `trx`.`token` AS `token` FROM `trx``trx`  ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure for view `vw_token_id`
+--
+DROP TABLE IF EXISTS `vw_token_id`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`%` SQL SECURITY DEFINER VIEW `vw_token_id`  AS SELECT DISTINCT `trx`.`tokenID` AS `tokenID` FROM `trx``trx`  ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure for view `vw_trx_wallets`
+--
+DROP TABLE IF EXISTS `vw_trx_wallets`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`%` SQL SECURITY DEFINER VIEW `vw_trx_wallets`  AS SELECT `a`.`timestamp` AS `timestamp`, date_format(`a`.`timestamp`,'%Y') AS `yyyy`, date_format(`a`.`timestamp`,'%m') AS `mmmm`, `a`.`hash` AS `hash`, `a`.`tx_block` AS `tx_block`, `a`.`tx_from` AS `tx_from`, `a`.`tx_to` AS `tx_to`, if(`a`.`tx_from` in (select `wallets`.`wallet` from `wallets`),'SELL','BUY') AS `tx_action`, `a`.`tokenID` AS `tokenID`, `a`.`token` AS `token`, `a`.`tx_value` AS `tx_value`, (`a`.`tx_gas` * 0.000000001) AS `tx_gas`, (`a`.`tx_value` + (`a`.`tx_gas` * 0.000000001)) AS `tx_total`, if(`a`.`tx_from` in (select `wallets`.`wallet` from `wallets`),`a`.`tx_value`,(-(1) * `a`.`tx_value`)) AS `trx_value` FROM `trx` AS `a``a`  ;
 
 --
 -- Indexes for dumped tables
@@ -92,10 +173,32 @@ ALTER TABLE `ether_trx`
   ADD PRIMARY KEY (`hash`);
 
 --
+-- Indexes for table `profitable`
+--
+ALTER TABLE `profitable`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `trx`
 --
 ALTER TABLE `trx`
   ADD PRIMARY KEY (`hash`);
+
+--
+-- Indexes for table `wallets`
+--
+ALTER TABLE `wallets`
+  ADD UNIQUE KEY `wallet` (`wallet`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `profitable`
+--
+ALTER TABLE `profitable`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

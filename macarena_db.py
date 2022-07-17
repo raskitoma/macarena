@@ -121,6 +121,58 @@ class EtherTrx(db.Model):
         }
         
 
+class Profitable(db.Model):
+    '''
+    Profit Table
+    '''
+    __tablename__ = 'profitable'
+    id = db.Column('id', db.Integer, primary_key=True)
+    token = db.Column('token', db.String(128))
+    tokenid = db.Column('tokenid', db.Integer)
+    buy_date = db.Column('buy_date', db.String(7), default=db.func.now())
+    buy_price = db.Column('buy_price', db.Float)
+    buy_gas = db.Column('buy_gas', db.Float)
+    sell_date = db.Column('sell_date', db.String(7), default=db.func.now())
+    sell_price = db.Column('sell_price', db.Float)
+    sell_gas = db.Column('sell_gas', db.Float)
+    profit = db.Column('profit', db.Float)
+    profit_percent = db.Column('profit_percent', db.Float)
+
+    def __init__(self, token, tokenid, buy_date, buy_price, buy_gas, sell_date, sell_price, sell_gas, profit, profit_percent):
+        self.token = token
+        self.tokenid = tokenid
+        self.buy_date = buy_date
+        self.buy_price = buy_price
+        self.buy_gas = buy_gas
+        self.sell_date = sell_date
+        self.sell_price = sell_price
+        self.sell_gas = sell_gas
+        self.profit = profit
+        self.profit_percent = profit_percent
+
+    def __repr__(self):
+        return f'token: {self.token}, tokenid: {self.tokenid}, buy_date: {self.buy_date}, buy_price: {self.buy_price}, buy_gas: {self.buy_gas}, sell_date: {self.sell_date}, sell_price: {self.sell_price}, sell_gas: {self.sell_gas}, profit: {self.profit}, profit_percent: {self.profit_percent}'
+
+    @property
+    def serialize(self):
+        '''
+        Just to return object data in an easy, serializable way
+        '''
+        return {
+            'token': self.token,
+            'tokenid': self.tokenid,
+            'buy_date': self.buy_date,
+            'buy_price': self.buy_price,
+            'buy_gas': self.buy_gas,
+            'sell_date': self.sell_date,
+            'sell_price': self.sell_price,
+            'sell_gas': self.sell_gas,
+            'profit': self.profit,
+            'profit_percent': self.profit_percent
+        }
+        
+
+
 # Initialize DB
 db.create_all()
 

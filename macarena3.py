@@ -32,6 +32,7 @@ for current_wallet in my_wallets:
     tc_progress= tqdm(total=len(tokens), desc="Token {} - wallet {}".format(len(tokens), current_wallet))
     for token in tokens:
         my_token = token.token
+        transaction_dating = ''
         if not simple_mode:
             my_year = year_month[0]
             my_month = year_month[1]
