@@ -7,4 +7,4 @@ Flask-SQLAlchemy==2.5.1
 PyVirtualDisplay==3.0
 requests==2.31.0
 selenium==4.3.0
-PyMySQL==1.0.2
+PyMySQL==1.1.1
